@@ -1,0 +1,185 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 2%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 2%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 0% 90%;
+    --destructive-foreground: 0 0% 10%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 40%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 3%;
+    --sidebar-foreground: 0 0% 80%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 80%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased w-full;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+  }
+
+  /* Custom scroll bar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted/70 rounded-full transition-colors;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted;
+  }
+
+  /* Glassmorphism classes */
+  .glass {
+    @apply backdrop-blur-md bg-white/5 border border-white/10;
+  }
+
+  .glass-dark {
+    @apply backdrop-blur-md bg-black/30 border border-white/10;
+  }
+
+  .glass-dialog {
+    @apply backdrop-blur-xl bg-black/60 border border-white/10;
+  }
+
+  /* Animation classes */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Priority Indicators */
+  .priority-low {
+    @apply border border-white/40;
+  }
+
+  .priority-medium {
+    @apply border border-white/70;
+  }
+
+  .priority-high {
+    @apply border-2 border-white;
+  }
+
+  /* Shimmer effect */
+  .shimmer {
+    @apply relative overflow-hidden bg-muted/20 before:absolute before:inset-0 before:-translate-x-full before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent;
+  }
+}
+
+@layer components {
+  /* Task card states */
+  .task-completed {
+    @apply opacity-60 line-through;
+  }
+
+  .task-overdue:not(.task-completed) {
+    @apply bg-muted border-destructive/50 text-destructive;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-md px-4 py-2 transition-colors;
+  }
+
+  .btn-outline {
+    @apply border border-input bg-transparent hover:bg-accent hover:text-accent-foreground rounded-md px-4 py-2 transition-colors;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-accent hover:text-accent-foreground rounded-md px-4 py-2 transition-colors;
+  }
+
+  .btn-icon {
+    @apply rounded-full p-2 hover:bg-muted transition-colors;
+  }
+
+  /* Tab styles */
+  .tab {
+    @apply px-4 py-2 text-muted-foreground transition-colors relative;
+  }
+
+  .tab.active {
+    @apply text-foreground;
+  }
+
+  .tab.active::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary;
+  }
+
+  /* Form styles */
+  .form-input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  .form-label {
+    @apply text-sm font-medium leading-none mb-2 block;
+  }
+}
