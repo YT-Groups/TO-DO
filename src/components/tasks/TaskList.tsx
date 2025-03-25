@@ -1,45 +1,62 @@
+import { useEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { Search, SlidersHorizontal } from "lucide-react";
 
-import { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import {
+  Task,
+  getFilteredTasks,
+  getSortedTasks,
+  useTaskStore,
+} from "@/lib/store";
 
-import { 
-  Task, 
-  getFilteredTasks, 
-  getSortedTasks, 
-  useTaskStore 
-} from '@/lib/store';
-
-import TaskCard from './TaskCard';
-import AddEditTaskDialog from './AddEditTaskDialog';
-import { Input } from '@/components/ui/input';
+import TaskCard from "./TaskCard";
+import AddEditTaskDialog from "./AddEditTaskDialog";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
+import { supabase } from "@/lib/supabase";
 
 const TaskList = () => {
-  const { 
-    tasks, 
-    currentFilter, 
-    sortBy, 
-    searchQuery, 
-    setSortBy, 
-    setSearchQuery 
+  // useEffect(() => {
+  //   const channel = supabase
+  //     .channel("tasks")
+  //     .on("postgres_changes", { event: "*", schema: "public" }, () => {
+  //       useTaskStore.getState().initializeStore();
+  //     })
+  //     .subscribe();
+
+  //   return () => {
+  //     channel.unsubscribe();
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    useTaskStore.getState().initializeStore();
+  }, []);
+
+  const {
+    tasks,
+    currentFilter,
+    sortBy,
+    searchQuery,
+    setSortBy,
+    setSearchQuery,
   } = useTaskStore();
-  
+
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  
+
   const filteredTasks = getFilteredTasks(tasks, currentFilter, searchQuery);
   const sortedTasks = getSortedTasks(filteredTasks, sortBy);
-  
+
   const handleEditTask = (task: Task) => {
     setEditingTask(task);
   };
-  
+
   const handleCloseDialog = () => {
     setEditingTask(null);
   };
@@ -57,7 +74,7 @@ const TaskList = () => {
             className="pl-9 bg-muted/30"
           />
         </div>
-        
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="btn-icon" aria-label="Sort options">
@@ -66,45 +83,41 @@ const TaskList = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="glass-dialog">
             <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-            <DropdownMenuItem 
-              onClick={() => setSortBy('dueDate')}
-              className={sortBy === 'dueDate' ? 'bg-muted' : ''}
+            <DropdownMenuItem
+              onClick={() => setSortBy("dueDate")}
+              className={sortBy === "dueDate" ? "bg-muted" : ""}
             >
               Due Date
             </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => setSortBy('priority')}
-              className={sortBy === 'priority' ? 'bg-muted' : ''}
+            <DropdownMenuItem
+              onClick={() => setSortBy("priority")}
+              className={sortBy === "priority" ? "bg-muted" : ""}
             >
               Priority
             </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => setSortBy('createdAt')}
-              className={sortBy === 'createdAt' ? 'bg-muted' : ''}
+            <DropdownMenuItem
+              onClick={() => setSortBy("createdAt")}
+              className={sortBy === "createdAt" ? "bg-muted" : ""}
             >
               Recently Added
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
+
       <div className="space-y-1">
         <AnimatePresence>
           {sortedTasks.length > 0 ? (
             sortedTasks.map((task) => (
-              <TaskCard 
-                key={task.id} 
-                task={task} 
-                onEdit={handleEditTask} 
-              />
+              <TaskCard key={task.id} task={task} onEdit={handleEditTask} />
             ))
           ) : (
             <div className="text-center py-10 text-muted-foreground animate-fade-in">
               {searchQuery ? (
                 <p>No tasks found matching "{searchQuery}"</p>
-              ) : currentFilter === 'completed' ? (
+              ) : currentFilter === "completed" ? (
                 <p>No completed tasks yet</p>
-              ) : currentFilter === 'overdue' ? (
+              ) : currentFilter === "overdue" ? (
                 <p>No overdue tasks</p>
               ) : (
                 <p>No tasks yet. Add your first task!</p>
@@ -113,12 +126,12 @@ const TaskList = () => {
           )}
         </AnimatePresence>
       </div>
-      
+
       {editingTask && (
-        <AddEditTaskDialog 
-          task={editingTask} 
-          isOpen={!!editingTask} 
-          onClose={handleCloseDialog} 
+        <AddEditTaskDialog
+          task={editingTask}
+          isOpen={!!editingTask}
+          onClose={handleCloseDialog}
         />
       )}
     </div>
